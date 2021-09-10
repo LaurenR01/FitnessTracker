@@ -17,7 +17,9 @@ app.use('/', routeIndex);
 
 mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/workout", {
     useNewUrlParser: true,
-    useCreateIndex: true, 
+    useUnifiedTopology: true,
+    useCreateIndex: true,
+    useFindAndModify: false
 }).then(con => {
     console.log("Database successfully connected")
 });

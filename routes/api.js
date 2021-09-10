@@ -1,6 +1,7 @@
-const Workout = require("../models/index");
+    const {Workout} = require("../models/index");
 const express = require('express');
 const router = express.Router();
+
 
 const getWorkouts = async (req, res) => {
     let workouts = await Workout.find();
