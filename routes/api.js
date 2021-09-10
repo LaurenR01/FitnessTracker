@@ -1,9 +1,9 @@
-const Workout = require("../models/index.js");
+const Workout = require("../models/index");
 const express = require('express');
 const router = express.Router();
 
-exports.getWorkouts = async (req, res) => {
-    const workouts = await Workout.find();
+const getWorkouts = async (req, res) => {
+    let workouts = await Workout.find();
 
     res.status(200).json({
         status: 'success',
@@ -11,10 +11,9 @@ exports.getWorkouts = async (req, res) => {
         data: workouts
     })
 };
-
     
 router
     .route('/workouts')
-    .get(this.getWorkouts)
+    .get(getWorkouts)
 
 module.exports = router;

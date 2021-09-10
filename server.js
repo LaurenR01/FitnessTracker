@@ -1,12 +1,11 @@
 const express = require('express');
 const logger = require( 'morgan');
-const dotenv = require('dotenv').config();
 const mongoose = require('mongoose');
 const apiRoute = require("./routes/api");
 const htmlRoute = require("./routes/html");
-const routeIndex = require('./routes/index');
+const routeIndex = require("./routes/index");
 
-const DB = process.env.DATABASE.replace('<PASSWORD>', process.env.DATABASE_PASSWORD);
+const DB = require('./models/index');
 
 const app = express();
 
@@ -16,7 +15,7 @@ app.use(express.urlencoded({extended : true}));
 app.use(express.json());
 app.use(express.static("public"));
 
-mongoose.connect(DB, {
+mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/workout", {
     useNewUrlParser: true,
     useCreateIndex: true,
     useFindAndModify: false,   
