@@ -1,7 +1,6 @@
 const express = require('express');
 const logger = require( 'morgan');
 const mongoose = require('mongoose');
-const routeIndex = require("./routes/index");
 
 const Workout = require('./models/index');
 
@@ -13,7 +12,8 @@ app.use(express.urlencoded({extended : true}));
 app.use(express.json());
 app.use(express.static("public"));
 
-app.use('/', routeIndex);
+require('./routes/api')(app);
+require('./routes/html')(app);
 
 mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/workout", {
     useNewUrlParser: true,

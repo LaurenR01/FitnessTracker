@@ -1,20 +1,62 @@
-    const {Workout} = require("../models/index");
-const express = require('express');
-const router = express.Router();
+const {Workout} = require("../models/index");
 
+module.exports = function(app){
+    app.get('/api/workouts', (req, res) => {
+        Workout.aggregate([
+          {
+            $addFields: {
+              totalDuration: {
+                $sum: '$exercises.duration',
+              },
+              totalDistance: {
+                $sum: '$exercises.distance'
+              }
+            },
+          },
+        ]).then(dbWorkout => {
+            res.json(dbWorkout);
+            })
+          .catch(err => {
+            res.status(400).json(err);
+          });
+    });
 
-const getWorkouts = async (req, res) => {
-    let workouts = await Workout.find();
-
-    res.status(200).json({
-        status: 'success',
-        result_num: workouts.length,
-        data: workouts
+    app.post("/api/workouts", (req, res) => {
+        Workout.create({})
+            .then((dbWorkout) => {
+                res.json(dbWorkout);
+            }).catch(err => {
+                res.status(400).json(err);
+            });
     })
-};
-    
-router
-    .route('/workouts')
-    .get(getWorkouts)
+    app.put("/api/workouts/:id", ({body, params}, res) => {
+        Workout.findByIdAndUpdate(
+            params.id,
+            { $push: {exercises: body }},
 
-module.exports = router;
+        ).then((dbWorkout) => {
+            res.json(dbWorkout);
+        }).catch(err => {
+          res.status(400).json(err);
+        });
+    });
+
+    app.get("/api/workouts/range", (req, res) => {
+        Workout.aggregate([
+            {
+                $addFields: {
+                    totalDuration: {
+                      $sum: '$exercises.duration',
+                    },
+                    totalDistance: {
+                      $sum: '$exercises.distance'
+                    }
+                },
+            }
+        ]).then((dbWorkout) => {
+          res.json(dbWorkout);
+        }).catch(err => {
+          res.status(400).json(err);
+        });
+    });
+};
